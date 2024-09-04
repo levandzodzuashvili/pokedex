@@ -16,8 +16,11 @@ const colors = {
 };
 
 const pokedex = document.getElementById("pokedex");
-
 const loadMoreButton = document.getElementById("load-more");
+
+let allPokemon = []; // Array to store all loaded Pokémon ამას გამოიყენებ რო შეინახო ერეიში ყველა ელემენტი
+let lastPokemonId = 50;
+const loadMorePokemons = 10;
 
 const getPokemon = () => {
   let promises = [];
@@ -32,7 +35,8 @@ const getPokemon = () => {
       image: data.sprites["front_default"],
       types: data.types.map((typeInfo) => typeInfo.type.name),
     }));
-    displayPokemon(pokemon);
+    allPokemon = allPokemon.concat(pokemon); // Add new Pokémon to allPokemon array კონკატი გინდა იმისთვის რო გააერთიანოს ახალი დატა რაც მიიღებს პრომისესიდან
+    displayPokemon(allPokemon); // ამას გამოიყენებ რო დაარენდერო ყველა პოკემონი
   });
 };
 
@@ -62,14 +66,8 @@ const displayPokemon = (pokemon) => {
   pokedex.innerHTML = pokemonString;
 };
 
-getPokemon();
-
-let lastPokemonId = 50;
-const loadMorePokemons = 10;
-
 loadMoreButton.addEventListener("click", function () {
   let promises = [];
-
   for (let i = lastPokemonId + 1; i <= lastPokemonId + loadMorePokemons; i++) {
     promises.push(
       fetch(`https://pokeapi.co/api/v2/pokemon/${i}`).then((res) => res.json())
@@ -83,7 +81,10 @@ loadMoreButton.addEventListener("click", function () {
       image: data.sprites.front_default,
       types: data.types.map((typeInfo) => typeInfo.type.name),
     }));
-    displayPokemon(pokemon);
+    allPokemon = allPokemon.concat(pokemon); //  აქედან დაამატებ ახალ პოკემონებს ყველა პოკემონის მასივში
+    displayPokemon(allPokemon); // ამას გამოიყენებ რო დაარენდერო ყველა პოკემონი
     lastPokemonId += loadMorePokemons;
   });
 });
+
+getPokemon();
