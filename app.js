@@ -89,15 +89,14 @@ loadMoreButton.addEventListener("click", function () {
 
 getPokemon();
 
-document
-  .getElementById("${singlePokemon.id}")
-  .addEventListener("click", function () {
-    async function fetchPokemonId(pokemonId) {
-      fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonId}`).then((res) =>
-        res.json()
-      );
-    }
-    const pokeInfo = res.json();
+document.querySelectorAll(".pokemon-icon").forEach((icon) => {
+  icon.addEventListener("click", async function () {
+    const pokemonId = this.getAttribute("data-id");
+    const response = await fetch(
+      `https://pokeapi.co/api/v2/pokemon/${pokemonId}`
+    );
+    const pokeInfo = await response.json();
+
     const pokeKey = pokeInfo.id;
     const pokeImg = pokeInfo.data.sprites.front_default;
     const pokeName = pokeInfo.name;
@@ -115,22 +114,25 @@ document
       .map((stat) => `${stat.stat.name}: ${stat.base_stat}`)
       .join(", ");
     const pokeTypes = pokeInfo.types.map((type) => type.type.name).join(", ");
+
     const pokeValue = `
-  <div class="about-poke">
-  <img class="image" src="${pokeImg}
-  <div class="nomeri">${pokeKey}</div>
-  <div class="saxeli>name:${pokeName}</div>
-  <div class="abilki">abilities:${pokeAbilities}</div>
-  <div class="exp">base_experience${pokeBaseExp}</div>
-  <div class="simagle">Hight:${pokeHight}</div>
-  <div class="weight">Weight:${pokeWeight}</div>
-  <div class="forms">Forms:${pokeForms}</div>
-  <div class="Items">Items:${pokeItems}</div>
-  <div class="stats">Stats:${pokeStats}</div>
-  <div class="types">${pokeTypes}</div>
-  </div>
-  `;
+      <div class="about-poke">
+        <img class="image" src="${pokeImg}" />
+        <div class="nomeri">ID: ${pokeKey}</div>
+        <div class="saxeli">Name: ${pokeName}</div>
+        <div class="abilki">Abilities: ${pokeAbilities}</div>
+        <div class="exp">Base Experience: ${pokeBaseExp}</div>
+        <div class="simagle">Height: ${pokeHight}</div>
+        <div class="weight">Weight: ${pokeWeight}</div>
+        <div class="forms">Forms: ${pokeForms}</div>
+        <div class="Items">Items: ${pokeItems}</div>
+        <div class="stats">Stats: ${pokeStats}</div>
+        <div class="types">Types: ${pokeTypes}</div>
+      </div>
+    `;
+
     localStorage.setItem(pokeKey, pokeValue);
-    console.log(pokeValue);
-    displayInfo(pokeValue);
+    window.location.href = `pokeinfo.html?id=${pokeKey}`;
+    displayPokemon(pokeValue);
   });
+});
