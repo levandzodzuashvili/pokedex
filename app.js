@@ -131,5 +131,6 @@ document
   </div>
   `;
     localStorage.setItem(pokeKey, pokeValue);
+    console.log(pokeValue);
     displayInfo(pokeValue);
   });
