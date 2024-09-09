@@ -53,7 +53,7 @@ const displayPokemon = (pokemon) => {
         .join("");
 
       return `
-        <div class="pokemon-icon" id="icon" href="pokeinfo.html">
+        <div class="pokemon-icon" data-id="${singlePokemon.id}" href="pokeinfo.html">
           <img class="pic" src="${singlePokemon.image}" />
           <div class="info">
           <div class="order">${singlePokemon.id}</div>
@@ -89,7 +89,7 @@ loadMoreButton.addEventListener("click", function () {
 
 getPokemon();
 
-getElementById("icon").addEventListener("click", function () {
+getElementById("${singlePokemon.id}").addEventListener("click", function () {
   async function fetchPokemonId(pokemonId) {
     fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonId}`).then((res) =>
       res.json()
