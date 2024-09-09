@@ -53,7 +53,7 @@ const displayPokemon = (pokemon) => {
         .join("");
 
       return `
-        <div class="pokemon-icon">
+        <div class="pokemon-icon" id="icon" href="pokeinfo.html">
           <img class="pic" src="${singlePokemon.image}" />
           <div class="info">
           <div class="order">${singlePokemon.id}</div>
@@ -88,3 +88,41 @@ loadMoreButton.addEventListener("click", function () {
 });
 
 getPokemon();
+
+getElementById("icon").addEventListener("contextmenu", function (e) {
+  e.preventDefault();
+  async function fetchPokemonId(pokemonId) {
+    fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonId}`).then((res) =>
+      res.json()
+    );
+  }
+  const pokeInfo = res.json();
+  const pokeKey = pokeInfo.id;
+  const pokeImg = pokeInfo.data.sprites.front_default;
+  const pokeName = pokeInfo.name;
+  const pokeAbilities = pokeInfo.abilities;
+  const pokeBaseExp = pokeInfo.base_experience;
+  const pokeHight = pokeInfo.height;
+  const pokeWeight = pokeInfo.weight;
+  const pokeForms = pokeInfo.forms;
+  const pokeItems = pokeInfo.held_items;
+  const pokeStats = pokeInfo.stats;
+  const pokeTypes = pokeInfo.types;
+  const pokeValue = `
+  <div class="about-poke">
+  <img class="image" src="${pokeImg}
+  <div class="nomeri">${pokeKey}</div>
+  <div class="saxeli>name:${pokeName}</div>
+  <div class="abilki">abilities:${pokeAbilities}</div>
+  <div class="exp">base_experience${pokeBaseExp}</div>
+  <div class="simagle">Hight:${pokeHight}</div>
+  <div class="weight">Weight:${pokeWeight}</div>
+  <div class="forms">Forms:${pokeForms}</div>
+  <div class="Items">Items:${pokeItems}</div>
+  <div class="stats">Stats:${pokeStats}</div>
+  <div class="types">${pokeTypes}</div>
+  </div>
+  `;
+  localStorage.setItem(pokeKey, pokeValue);
+  displayInfo(getItem(pokeKey, pokeValue));
+});
