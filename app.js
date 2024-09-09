@@ -89,8 +89,7 @@ loadMoreButton.addEventListener("click", function () {
 
 getPokemon();
 
-getElementById("icon").addEventListener("contextmenu", function (e) {
-  e.preventDefault();
+getElementById("icon").addEventListener("click", function () {
   async function fetchPokemonId(pokemonId) {
     fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonId}`).then((res) =>
       res.json()
