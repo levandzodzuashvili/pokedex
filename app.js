@@ -89,31 +89,33 @@ loadMoreButton.addEventListener("click", function () {
 
 getPokemon();
 
-getElementById("${singlePokemon.id}").addEventListener("click", function () {
-  async function fetchPokemonId(pokemonId) {
-    fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonId}`).then((res) =>
-      res.json()
-    );
-  }
-  const pokeInfo = res.json();
-  const pokeKey = pokeInfo.id;
-  const pokeImg = pokeInfo.data.sprites.front_default;
-  const pokeName = pokeInfo.name;
-  const pokeAbilities = pokeInfo.abilities;
-  const pokeBaseExp = pokeInfo.base_experience
-    .map((ability) => ability.ability.name)
-    .join(", ");
-  const pokeHight = pokeInfo.height;
-  const pokeWeight = pokeInfo.weight;
-  const pokeForms = pokeInfo.forms.map((form) => form.name).join(", ");
-  const pokeItems = pokeInfo.held_items
-    .map((item) => item.item.name)
-    .join(", ");
-  const pokeStats = pokeInfo.stats
-    .map((stat) => `${stat.stat.name}: ${stat.base_stat}`)
-    .join(", ");
-  const pokeTypes = pokeInfo.types.map((type) => type.type.name).join(", ");
-  const pokeValue = `
+document
+  .getElementById("${singlePokemon.id}")
+  .addEventListener("click", function () {
+    async function fetchPokemonId(pokemonId) {
+      fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonId}`).then((res) =>
+        res.json()
+      );
+    }
+    const pokeInfo = res.json();
+    const pokeKey = pokeInfo.id;
+    const pokeImg = pokeInfo.data.sprites.front_default;
+    const pokeName = pokeInfo.name;
+    const pokeAbilities = pokeInfo.abilities;
+    const pokeBaseExp = pokeInfo.base_experience
+      .map((ability) => ability.ability.name)
+      .join(", ");
+    const pokeHight = pokeInfo.height;
+    const pokeWeight = pokeInfo.weight;
+    const pokeForms = pokeInfo.forms.map((form) => form.name).join(", ");
+    const pokeItems = pokeInfo.held_items
+      .map((item) => item.item.name)
+      .join(", ");
+    const pokeStats = pokeInfo.stats
+      .map((stat) => `${stat.stat.name}: ${stat.base_stat}`)
+      .join(", ");
+    const pokeTypes = pokeInfo.types.map((type) => type.type.name).join(", ");
+    const pokeValue = `
   <div class="about-poke">
   <img class="image" src="${pokeImg}
   <div class="nomeri">${pokeKey}</div>
@@ -128,6 +130,6 @@ getElementById("${singlePokemon.id}").addEventListener("click", function () {
   <div class="types">${pokeTypes}</div>
   </div>
   `;
-  localStorage.setItem(pokeKey, pokeValue);
-  displayInfo(pokeValue);
-});
+    localStorage.setItem(pokeKey, pokeValue);
+    displayInfo(pokeValue);
+  });
