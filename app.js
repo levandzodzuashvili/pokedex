@@ -18,11 +18,9 @@ const colors = {
 const pokedex = document.getElementById("pokedex");
 const loadMoreButton = document.getElementById("load-more");
 
-let allPokemon = []; 
-let selectedPokemon = JSON.parse(localStorage.getItem('selectedPokemon')) || []; 
+let allPokemon = []; // Array to store all loaded Pokémon ამას გამოიყენებ რო შეინახო ერეიში ყველა ელემენტი
 let lastPokemonId = 50;
 const loadMorePokemons = 10;
-
 
 const getPokemon = () => {
   let promises = [];
@@ -37,11 +35,10 @@ const getPokemon = () => {
       image: data.sprites["front_default"],
       types: data.types.map((typeInfo) => typeInfo.type.name),
     }));
-    allPokemon = allPokemon.concat(pokemon); 
-    displayPokemon(allPokemon); 
+    allPokemon = allPokemon.concat(pokemon); // Add new Pokémon to allPokemon array კონკატი გინდა იმისთვის რო გააერთიანოს ახალი დატა რაც მიიღებს პრომისესიდან
+    displayPokemon(allPokemon); // ამას გამოიყენებ რო დაარენდერო ყველა პოკემონი
   });
 };
-
 
 const displayPokemon = (pokemon) => {
   const pokemonString = pokemon
@@ -55,68 +52,19 @@ const displayPokemon = (pokemon) => {
         )
         .join("");
 
-      const isSelected = selectedPokemon.some(p => p.id === singlePokemon.id);
-      const selectButtonText = isSelected ? 'Deselect' : 'Select';
-
       return `
-        <div class="pokemon-icon" data-id="${singlePokemon.id}">
+        <div class="pokemon-icon" data-id="${singlePokemon.id}" onclick="location.href='pokeinfo.html?id=${singlePokemon.id}'">
           <img class="pic" src="${singlePokemon.image}" />
           <div class="info">
-            <div class="order">${singlePokemon.id}</div>
-            <div class="txt">${singlePokemon.name}</div>
+          <div class="order">${singlePokemon.id}</div>
+          <div class="txt">${singlePokemon.name}</div>
           </div>
           <div class="type-container">${typePills}</div>
-          <button class="select-button">${selectButtonText}</button>
         </div>`;
     })
     .join("");
   pokedex.innerHTML = pokemonString;
-
-
-  document.querySelectorAll('.select-button').forEach(button => {
-    button.addEventListener('click', handleSelectClick);
-  });
 };
-
-
-const handleSelectClick = (event) => {
-  const pokemonId = parseInt(event.target.parentElement.dataset.id);
-  const pokemon = allPokemon.find(p => p.id === pokemonId);
-  
-  const isAlreadySelected = selectedPokemon.some(p => p.id === pokemon.id);
-  
-  if (isAlreadySelected) {
-    
-    selectedPokemon = selectedPokemon.filter(p => p.id !== pokemon.id);
-    event.target.textContent = 'Select';
-  } else {
-    
-    selectedPokemon.push(pokemon);
-    event.target.textContent = 'Deselect';
-  }
-
-  
-  localStorage.setItem('selectedPokemon', JSON.stringify(selectedPokemon));
-  displaySelectedPokemon(); 
-};
-
-
-const displaySelectedPokemon = () => {
-  const selectedPokedex = document.getElementById("selected-pokedex");
-  if (!selectedPokedex) return;
-
-  const selectedString = selectedPokemon
-    .map(pokemon => `
-      <div class="selected-pokemon">
-        <img src="${pokemon.image}" alt="${pokemon.name}" />
-        <div>${pokemon.name}</div>
-      </div>
-    `)
-    .join("");
-  
-  selectedPokedex.innerHTML = selectedString;
-};
-
 
 loadMoreButton.addEventListener("click", function () {
   let promises = [];
@@ -133,11 +81,56 @@ loadMoreButton.addEventListener("click", function () {
       image: data.sprites.front_default,
       types: data.types.map((typeInfo) => typeInfo.type.name),
     }));
-    allPokemon = allPokemon.concat(pokemon); 
-    displayPokemon(allPokemon); 
+    allPokemon = allPokemon.concat(pokemon); //  აქედან დაამატებ ახალ პოკემონებს ყველა პოკემონის მასივში
+    displayPokemon(allPokemon); // ამას გამოიყენებ რო დაარენდერო ყველა პოკემონი
     lastPokemonId += loadMorePokemons;
   });
 });
 
-getPokemon(); 
-displaySelectedPokemon(); 
+getPokemon();
+
+document
+  .getElementById("${singlePokemon.id}")
+  .addEventListener("click", function () {
+    async function fetchPokemonId(pokemonId) {
+      fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonId}`).then((res) =>
+        res.json()
+      );
+    }
+    const pokeInfo = res.json();
+    const pokeKey = pokeInfo.id;
+    const pokeImg = pokeInfo.data.sprites.front_default;
+    const pokeName = pokeInfo.name;
+    const pokeAbilities = pokeInfo.abilities;
+    const pokeBaseExp = pokeInfo.base_experience
+      .map((ability) => ability.ability.name)
+      .join(", ");
+    const pokeHight = pokeInfo.height;
+    const pokeWeight = pokeInfo.weight;
+    const pokeForms = pokeInfo.forms.map((form) => form.name).join(", ");
+    const pokeItems = pokeInfo.held_items
+      .map((item) => item.item.name)
+      .join(", ");
+    const pokeStats = pokeInfo.stats
+      .map((stat) => `${stat.stat.name}: ${stat.base_stat}`)
+      .join(", ");
+    const pokeTypes = pokeInfo.types.map((type) => type.type.name).join(", ");
+    const pokeValue = `
+  <div class="about-poke">
+  <img class="image" src="${pokeImg}
+  <div class="nomeri">${pokeKey}</div>
+  <div class="saxeli>name:${pokeName}</div>
+  <div class="abilki">abilities:${pokeAbilities}</div>
+  <div class="exp">base_experience${pokeBaseExp}</div>
+  <div class="simagle">Hight:${pokeHight}</div>
+  <div class="weight">Weight:${pokeWeight}</div>
+  <div class="forms">Forms:${pokeForms}</div>
+  <div class="Items">Items:${pokeItems}</div>
+  <div class="stats">Stats:${pokeStats}</div>
+  <div class="types">${pokeTypes}</div>
+  </div>
+  `;
+    localStorage.setItem(pokeKey, pokeValue);
+    console.log(pokeValue);
+    displayInfo(pokeValue);
+  });
