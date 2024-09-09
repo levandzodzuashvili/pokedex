@@ -129,5 +129,5 @@ getElementById("${singlePokemon.id}").addEventListener("click", function () {
   </div>
   `;
   localStorage.setItem(pokeKey, pokeValue);
-  displayInfo(getItem(pokeKey, pokeValue));
+  displayInfo(pokeValue);
 });
