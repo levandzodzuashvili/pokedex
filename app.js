@@ -116,7 +116,7 @@ document.querySelectorAll(".pokemon-icon").forEach((icon) => {
     const pokeTypes = pokeInfo.types.map((type) => type.type.name).join(", ");
 
     const pokeValue = `
-      <div class="about-poke">
+      <div class="about-poke" href="pokeinfo.html">
         <img class="image" src="${pokeImg}" />
         <div class="nomeri">ID: ${pokeKey}</div>
         <div class="saxeli">Name: ${pokeName}</div>
