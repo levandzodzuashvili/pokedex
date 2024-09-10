@@ -18,6 +18,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const pokedex = document.getElementById("pokedex");
   const loadMoreButton = document.getElementById("load-more");
+  let selectedPokemon =
+    JSON.parse(localStorage.getItem("selectedPokemon")) || [];
 
   if (!pokedex) {
     console.error("POKEDEX ELEMENT NOT FOUND");
@@ -57,6 +59,8 @@ document.addEventListener("DOMContentLoaded", () => {
               }">${type}</a>`
           )
           .join("");
+        const isSelected = selectedPokemon.some((p) => p.id === pokemon.id);
+        const selectButtonText = isSelected ? "Deselect" : "Select";
 
         return `
         <div class="pokemon-icon" data-id="${singlePokemon.id}" onclick="location.href='pokeinfo.html?id=${singlePokemon.id}'">
@@ -66,11 +70,14 @@ document.addEventListener("DOMContentLoaded", () => {
           <div class="txt">${singlePokemon.name}</div>
           </div>
           <div class="type-container">${typePills}</div>
+          <button class="select-button">${selectButtonText}</button>
         </div>`;
       })
       .join("");
+
     pokedex.innerHTML = pokemonString;
   };
+
   if (loadMoreButton != null) {
     loadMoreButton.addEventListener("click", function () {
       let promises = [];
@@ -101,51 +108,4 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   getPokemon();
-
-  document.querySelectorAll(".pokemon-icon").forEach((icon) => {
-    icon.addEventListener("click", async function () {
-      const pokemonId = this.getAttribute("data-id");
-      const response = await fetch(
-        `https://pokeapi.co/api/v2/pokemon/${pokemonId}`
-      );
-      const pokeInfo = await response.json();
-
-      const pokeKey = pokeInfo.id;
-      const pokeImg = pokeInfo.data.sprites.front_default;
-      const pokeName = pokeInfo.name;
-      const pokeAbilities = pokeInfo.abilities;
-      const pokeBaseExp = pokeInfo.base_experience
-        .map((ability) => ability.ability.name)
-        .join(", ");
-      const pokeHight = pokeInfo.height;
-      const pokeWeight = pokeInfo.weight;
-      const pokeForms = pokeInfo.forms.map((form) => form.name).join(", ");
-      const pokeItems = pokeInfo.held_items
-        .map((item) => item.item.name)
-        .join(", ");
-      const pokeStats = pokeInfo.stats
-        .map((stat) => `${stat.stat.name}: ${stat.base_stat}`)
-        .join(", ");
-      const pokeTypes = pokeInfo.types.map((type) => type.type.name).join(", ");
-
-      const pokeValue = `
-      <div class="about-poke" href="pokeinfo.html">
-        <img class="image" src="${pokeImg}" />
-        <div class="nomeri">ID: ${pokeKey}</div>
-        <div class="saxeli">Name: ${pokeName}</div>
-        <div class="abilki">Abilities: ${pokeAbilities}</div>
-        <div class="exp">Base Experience: ${pokeBaseExp}</div>
-        <div class="simagle">Height: ${pokeHight}</div>
-        <div class="weight">Weight: ${pokeWeight}</div>
-        <div class="forms">Forms: ${pokeForms}</div>
-        <div class="Items">Items: ${pokeItems}</div>
-        <div class="stats">Stats: ${pokeStats}</div>
-        <div class="types">Types: ${pokeTypes}</div>
-      </div>
-    `;
-
-      localStorage.setItem(pokeKey, pokeValue);
-      window.location.href = `pokeinfo.html?id=${pokeKey}`;
-    });
-  });
 });
