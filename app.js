@@ -16,6 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
     normal: "#F5F5F5",
   };
 
+  let pokeTeam = [];
   const pokedex = document.getElementById("pokedex");
   const loadMoreButton = document.getElementById("load-more");
   let selectedPokemon =
@@ -26,7 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  let allPokemon = []; // Array to store all loaded Pokémon ამას გამოიყენებ რო შეინახო ერეიში ყველა ელემენტი
+  let allPokemon = [];
   let lastPokemonId = 50;
   const loadMorePokemons = 10;
 
@@ -43,8 +44,8 @@ document.addEventListener("DOMContentLoaded", () => {
         image: data.sprites["front_default"],
         types: data.types.map((typeInfo) => typeInfo.type.name),
       }));
-      allPokemon = allPokemon.concat(pokemon); // Add new Pokémon to allPokemon array კონკატი გინდა იმისთვის რო გააერთიანოს ახალი დატა რაც მიიღებს პრომისესიდან
-      displayPokemon(allPokemon); // ამას გამოიყენებ რო დაარენდერო ყველა პოკემონი
+      allPokemon = allPokemon.concat(pokemon);
+      displayPokemon(allPokemon);
     });
   };
 
@@ -59,15 +60,17 @@ document.addEventListener("DOMContentLoaded", () => {
               }">${type}</a>`
           )
           .join("");
-        const isSelected = selectedPokemon.some((p) => p.id === pokemon.id);
+        const isSelected = selectedPokemon.some(
+          (p) => p.id === singlePokemon.id
+        );
         const selectButtonText = isSelected ? "Deselect" : "Select";
 
         return `
         <div class="pokemon-icon" data-id="${singlePokemon.id}" onclick="location.href='pokeinfo.html?id=${singlePokemon.id}'">
           <img class="pic" src="${singlePokemon.image}" />
           <div class="info">
-          <div class="order">${singlePokemon.id}</div>
-          <div class="txt">${singlePokemon.name}</div>
+            <div class="order">${singlePokemon.id}</div>
+            <div class="txt">${singlePokemon.name}</div>
           </div>
           <div class="type-container">${typePills}</div>
           <button class="select-button">${selectButtonText}</button>
@@ -76,9 +79,78 @@ document.addEventListener("DOMContentLoaded", () => {
       .join("");
 
     pokedex.innerHTML = pokemonString;
+    document.querySelectorAll(".select-button").forEach((button) => {
+      button.addEventListener("contextmenu", handleSelectClick);
+    });
   };
 
-  if (loadMoreButton != null) {
+  const handleSelectClick = (event) => {
+    event.preventDefault();
+    const pokemonId = parseInt(event.target.parentElement.dataset.id);
+    const pokemon = allPokemon.find((p) => p.id === pokemonId);
+
+    if (!pokemon) return;
+
+    const isAlreadySelected = selectedPokemon.some((p) => p.id === pokemon.id);
+
+    if (isAlreadySelected) {
+      selectedPokemon = selectedPokemon.filter((p) => p.id !== pokemon.id);
+      event.target.textContent = "Select";
+    } else {
+      if (selectedPokemon.length < 5) {
+        selectedPokemon.push(pokemon);
+        event.target.textContent = "Deselect";
+      }
+    }
+
+    localStorage.setItem("selectedPokemon", JSON.stringify(selectedPokemon));
+
+    console.log("Selected Pokémon:", selectedPokemon); // Debugging line
+
+    displaySelectedPokemon();
+  };
+
+  const displaySelectedPokemon = () => {
+    const poketeamDiv = document.getElementById("poketeam");
+    if (!poketeamDiv) return;
+
+    poketeamDiv.innerHTML = "";
+    selectedPokemon.forEach((pokemon) => {
+      const selectedDiv = document.createElement("div");
+      selectedDiv.className = "selected-pokemon";
+
+      const img = document.createElement("img");
+      img.src = pokemon.image;
+      img.alt = pokemon.name;
+      img.className = "pokemon-image";
+
+      const nameDiv = document.createElement("div");
+      nameDiv.textContent = pokemon.name;
+
+      selectedDiv.appendChild(img);
+      selectedDiv.appendChild(nameDiv);
+
+      poketeamDiv.appendChild(selectedDiv);
+    });
+  };
+
+  const updatePokeTeamDisplay = () => {
+    const poketeamDiv = document.getElementById("poketeam");
+    if (!poketeamDiv) return;
+
+    poketeamDiv.innerHTML = ""; // Clear existing content
+
+    pokeTeam.forEach((pokemon) => {
+      const imgElement = document.createElement("img");
+      imgElement.src = pokemon.image;
+      imgElement.alt = pokemon.name;
+      imgElement.className = "pokemon-image";
+
+      poketeamDiv.appendChild(imgElement);
+    });
+  };
+
+  if (loadMoreButton) {
     loadMoreButton.addEventListener("click", function () {
       let promises = [];
       for (
@@ -100,8 +172,8 @@ document.addEventListener("DOMContentLoaded", () => {
           image: data.sprites.front_default,
           types: data.types.map((typeInfo) => typeInfo.type.name),
         }));
-        allPokemon = allPokemon.concat(pokemon); //  აქედან დაამატებ ახალ პოკემონებს ყველა პოკემონის მასივში
-        displayPokemon(allPokemon); // ამას გამოიყენებ რო დაარენდერო ყველა პოკემონი
+        allPokemon = allPokemon.concat(pokemon);
+        displayPokemon(allPokemon);
         lastPokemonId += loadMorePokemons;
       });
     });

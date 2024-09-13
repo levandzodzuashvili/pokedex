@@ -6,23 +6,24 @@
 //     );
 //     const pokeInfo = await response.json();
 
-//     const pokeKey = pokeInfo.id;
+//     const pokeKey = singlePokemon.id;
 //     const pokeImg = pokeInfo.data.sprites.front_default;
 //     const pokeName = pokeInfo.name;
 //     const pokeAbilities = pokeInfo.abilities;
-//     const pokeBaseExp = pokeInfo.base_experience
+//     const pokeBaseExp = singlePokemon.base_experience
 //       .map((ability) => ability.ability.name)
 //       .join(", ");
-//     const pokeHight = pokeInfo.height;
-//     const pokeWeight = pokeInfo.weight;
-//     const pokeForms = pokeInfo.forms.map((form) => form.name).join(", ");
-//     const pokeItems = pokeInfo.held_items
+//     const pokeBaseExp = singlePokemon.base_experience
+//     const pokeHight = singlePokemon.height;
+//     const pokeWeight = singlePokemon.weight;
+//     const pokeForms = data.forms.map((form) => form.name).join(", ");
+//     const pokeItems = data.held_items
 //       .map((item) => item.item.name)
 //       .join(", ");
-//     const pokeStats = pokeInfo.stats
+//     const pokeStats = data.stats
 //       .map((stat) => `${stat.stat.name}: ${stat.base_stat}`)
 //       .join(", ");
-//     const pokeTypes = pokeInfo.types.map((type) => type.type.name).join(", ");
+//     const pokeTypes = data.types.map((type) => type.type.name).join(", ");
 
 //     const pokeValue = `
 //     <div class="about-poke" href="pokeinfo.html">
@@ -76,8 +77,18 @@ const getPokemon = () => {
       name: data.name,
       image: data.sprites["front_default"],
       types: data.types.map((typeInfo) => typeInfo.type.name),
+      abilities: data.abilities
+        .map((ability) => ability.ability.name)
+        .join(", "),
+      base_experience: data.base_experience,
+      height: data.height,
+      weight: data.weight,
+      forms: data.forms.map((form) => form.name).join(", "),
+      held_items: data.held_items.map((item) => item.item.name).join(", "),
+      stats: data.stats
+        .map((stat) => `${stat.stat.name}: ${stat.base_stat}`)
+        .join(", "),
     }));
-
     displayPokemon(pokemon);
   });
 };
@@ -100,6 +111,13 @@ const displayPokemon = (pokemon) => {
         <div class="info">
         <div class="order">${singlePokemon.id}</div>
         <div class="txt">${singlePokemon.name}</div>
+        <div class="abilki">${singlePokemon.abilities}</div>
+        <div class="exp">${singlePokemon.base_experience}</div>
+        <div class="simagle">${singlePokemon.height}</div>
+        <div class="weight">${singlePokemon.weight}</div>
+        <div class="forms">${singlePokemon.forms}</div>
+        <div class="held-items">${singlePokemon.held_items}</div>
+        <div class="stats">${singlePokemon.stats}</div>
         </div>
         <div class="type-container">${typePills}</div>
       </div>`;
