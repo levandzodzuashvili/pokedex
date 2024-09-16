@@ -138,7 +138,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const poketeamDiv = document.getElementById("poketeam");
     if (!poketeamDiv) return;
 
-    poketeamDiv.innerHTML = ""; // Clear existing content
+    poketeamDiv.innerHTML = "";
 
     pokeTeam.forEach((pokemon) => {
       const imgElement = document.createElement("img");
