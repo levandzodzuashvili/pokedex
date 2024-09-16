@@ -149,6 +149,29 @@ document.addEventListener("DOMContentLoaded", () => {
       poketeamDiv.appendChild(imgElement);
     });
   };
+  function updateButton() {
+    // Find the container where you want to place the button
+    const buttonContainer = document.getElementById("button-container");
+
+    // Check if the length of selectedPokemon is 5
+    if (selectedPokemon.length === 5) {
+      // Create a new button element
+      const button = document.createElement("button");
+      button.textContent = "Fight";
+
+      // Set up the button click event to redirect to battle.html
+      button.onclick = function () {
+        window.location.href = "battle.html";
+      };
+
+      // Clear the container and append the new button
+      buttonContainer.innerHTML = ""; // Optional: clear existing content
+      buttonContainer.appendChild(button);
+    }
+  }
+
+  // Call the function to update the button based on the current state
+  updateButton();
 
   if (loadMoreButton) {
     loadMoreButton.addEventListener("click", function () {

@@ -87,3 +87,7 @@
   height: 100px;
   object-fit: cover;
 }
+
+.invisible {
+  opacity: 0;
+}
